@@ -1,10 +1,11 @@
 <template>
-  <form >
+  <form @submit.prevent="handleSubmit">
       <label >Email</label>
       <input type="email" required v-model="email">
 
       <label>Password</label>
       <input type="text" required v-model="password">
+      <div v-if="passwordError" class="error">{{passwordError}}</div>  
       <label>Role</label>
        
       
@@ -13,14 +14,16 @@
            <option value="designer">Web Designer</option>
       </select>
        <label >Skills</label>
-       <input type="text" v-model="tempSkill" @keyup="  addSkill" >
-      <div v-for="skill in skills" :key="skill" class="pill"></div>
+       <input type="text" v-model="tempSkill" @keyup.alt="  addSkill" >
+      <div v-for="skill in skills" :key="skill" class="pill">
+          <span @click="deleteSkill(skill)">{{skill}}</span>
+      </div>
       
       <div class="terms">
           <input type="checkbox" v-model="terms" required>
           <label >Accept term and Conditions</label>
       </div>
-
+   <button>Create An Account </button>
   </form>
   <p>Email: {{email}}</p>
   <p>Password: {{password}}</p>
@@ -37,22 +40,36 @@ export default {
          role:'',
          terms: false,
          tempSkill: '',
-         skills: []
+         skills: [],
+         passwordError: ''
+
      }
  },
  methods:{
      addSkill(e) {
          
          if(e.key === ',' && this.tempSkill){
-             this.skills.push(this.tempSkill)
+            if (this.skills.includes(this.tempSkill)){
+                 this.skills.push(this.tempSkill)
+             }
+            
              this.tempSkill = ''
          }
      
+     },
+     deleteSkill(skill){
+     this.skill = this.skills.filter((item) => {
+         return skill !== item
+     })
+     },
+     handleSubmit(){
+         
      }
 }
 }
+this.passwordError = this.password.length > 5 ? '' : 'Password must be at least 6 chars long'
 
-</script>
+ </script>
 
 <style>
 form{
@@ -100,5 +117,39 @@ input[type="checkbox"] {
     margin: 0 10px 0 0 ;
     position: relative;
     top: 2px;
+}
+
+.pill{
+    display: inline-block;
+    margin: 20px 10px 0 0;
+    padding: 6px 12px;
+    background: #eee;
+    border-radius: 20px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    font-weight: bold;
+    color: #777;
+    cursor: pointer;
+}
+
+button{
+    background: blue;
+    border:0;
+    padding: 10px 20px;
+    margin-top:20px ;
+    color: white;
+    border-radius: 20px;
+
+}
+
+.submit{
+    text-align: center;
+}
+
+.error{
+   color: red;
+   margin-top: 10px;
+   font-size: 0.8em;
+   font-weight: bold;
 }
 </style>
